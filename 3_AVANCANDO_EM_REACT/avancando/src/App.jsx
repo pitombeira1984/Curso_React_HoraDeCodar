@@ -2,7 +2,13 @@ import './App.css';
 // Importando Imagem de assets
 import img1 from './assets/img1.jpg';
 // Importando Data
-import Data from './components/Data';
+import Data from './components/data';
+// Importando ListRender
+import ListRender from './components/ListRender';
+// Importando Contador
+import Contador from './components/PreviousState';
+// Importando CondicionalRender
+import ConditionalRender from './components/ConditionalRender';
 
 
 function App() {
@@ -17,6 +23,12 @@ function App() {
         <img src={img1} alt="ImgFloresta" />
         {/* useSate */}
         <Data />
+        {/* Renderização de listas */}
+        <ListRender />
+        {/* Previous State */}
+        <Contador />
+        {/* Renderização Condicional */}
+        <ConditionalRender />
       </div>
     </>
   )
