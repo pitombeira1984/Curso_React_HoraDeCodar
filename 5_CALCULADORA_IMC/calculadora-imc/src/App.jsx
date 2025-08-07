@@ -3,6 +3,7 @@ import {useState} from 'react'
 import './App.css'
 import ImcCalc from './compomente/ImcCalc'
 import ImcTable from './compomente/ImcTable'
+import {data} from './data/Data'
 
 function App() {
 
@@ -25,6 +26,23 @@ function App() {
 
     setImc(imc.toFixed(1));
 
+    data.forEach((item) => {
+      if (imc >= item.min && imc <= item.max) {
+        setInfo(item.info);
+        setInfoclass(item.infoclass);
+      }
+    });
+
+    if(!info) return;
+
+  }
+
+  const resetCalc = (e) => {
+    e.preventDefault();
+
+    setImc('');
+    setImc('');
+    setInfoclass('');
   }
   
   const [imc , setImc] = useState('');
@@ -33,7 +51,17 @@ function App() {
 
   return (
     <div className='container'>
-      {!imc ? <ImcCalc CalcImc = {CalcImc}/> : <ImcTable/>}
+      {!imc ? (
+        <ImcCalc CalcImc = {CalcImc}/>
+      ) : (
+        <ImcTable 
+          data = {data} 
+          imc={imc} 
+          info={info} 
+          infoclass={infoclass} 
+          resetCalc={resetCalc}
+        />
+      )}
     </div>
   )
 }

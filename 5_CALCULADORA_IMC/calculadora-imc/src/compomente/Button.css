@@ -22,3 +22,9 @@ button:hover{
     padding: 1rem 1.5rem;
     border-radius: 0.5rem;
 }
+
+#back-btn{
+    background-color: #f44236;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+}
