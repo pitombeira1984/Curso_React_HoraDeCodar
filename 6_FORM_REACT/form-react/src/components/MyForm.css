@@ -10,14 +10,12 @@ form {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Labels */
 label, 
 label span {
   font-size: 14px;
-  font-weight: 600;
   color: #ffffff;
   display: flex;
   flex-direction: column;
