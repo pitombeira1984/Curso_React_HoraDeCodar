@@ -1,0 +1,223 @@
+✅ PARTE 1 — Arquivo useForm.jsx (custom hook)
+
+🔍 Código explicado
+1. Import do useState
+import {useState} from "react";
+
+
+Você usa o useState para armazenar qual é o passo atual do formulário.
+
+2. Definição do hook
+export function userForm(steps){
+
+
+Esse hook recebe como parâmetro:
+
+steps: um array contendo os componentes das etapas do formulário
+(ex.: [<UserForm />, <ReviewForm />, <Thanks />])
+
+3. Estado que controla qual etapa está ativa
+const [currentStep, setCurrentStep] = useState(0)
+
+
+currentStep é um número, começando em 0.
+
+Cada número representa uma etapa do array steps.
+
+Exemplo:
+
+currentStep	Componente exibido
+0	<UserForm />
+1	<ReviewForm />
+2	<Thanks />
+4. Função que muda de etapa
+function changeStep(i, e){
+    if (e) e.preventDefault();
+    if(i < 0 || i >= steps.length) return
+
+    setCurrentStep(i)
+}
+
+
+Explicando:
+
+Recebe i, o índice da próxima etapa.
+
+Se receber e (evento do form), chama preventDefault() para evitar reload da página.
+
+Proteção:
+– Se tentar ir para um índice menor que 0 → ignora
+– Se tentar ir além do número de steps → ignora
+
+Altera o estado para i.
+
+5. Retorno do hook
+return{
+    currentStep,
+    currentComponent: steps[currentStep],
+    changeStep,
+    isLastStep: currentStep + 1 === steps.length ? true : false,
+};
+
+
+Ele retorna:
+
+Propriedade	 O que faz
+currentStep	 Número da etapa atual
+currentComponent O componente da etapa atual
+changeStep	 Função para mudar de etapa
+isLastStep	 Booleano indicando se está na última etapa
+
+🔎 Como funciona isLastStep?
+currentStep + 1 === steps.length
+
+
+Se steps.length = 3:
+
+last step é currentStep === 2.
+
+Então isLastStep fica true somente quando você chega no último componente.
+
+✅ PARTE 2 — Arquivo App.jsx
+
+🔍 1. Imports
+import {GrFormNext, GrFormPrevious} from 'react-icons/gr'
+import {FiSend} from 'react-icons/fi'
+
+
+Importa ícones para "próximo", "voltar" e "enviar".
+
+import './App.css'
+import UserForm from './components/UserForm'
+import ReviewForm from './components/ReviewForm'
+import Thanks from './components/Thanks'
+
+
+Importa o CSS e os 3 componentes que representam cada etapa.
+
+import { userForm } from './hooks/userForm'
+
+
+Importa o custom hook que controla os passos.
+
+🔍 2. Array com as etapas
+const formComponents = [<UserForm/>, <ReviewForm/>, <Thanks/>]
+
+
+Esse array é enviado para o hook.
+O índice representa a ordem:
+
+0 → UserForm
+1 → ReviewForm
+2 → Thanks
+
+🔍 3. Hook sendo usado
+const {currentStep, currentComponent, changeStep, isLastStep} =
+  userForm(formComponents)
+
+
+O hook devolve:
+
+currentStep: número da etapa
+
+currentComponent: componente correspondente
+
+changeStep: função para avançar/voltar
+
+isLastStep: booleano indicando se é a última
+
+🔍 4. Formulário
+Evento de submit avança a etapa
+<form onSubmit={(e) => changeStep(currentStep + 1, e)}>
+
+
+Quando o usuário clica em “Avançar”
+
+Ele chama changeStep(currentStep + 1)
+
+O e impede o reload da página
+
+Se for última etapa, o botão “Avançar” nem aparece
+
+🔍 5. Área de inputs
+<div className="inputs-container">{currentComponent}</div>
+
+
+Aqui ele renderiza o componente da etapa atual.
+Ou seja, o formulário troca o conteúdo dinamicamente.
+
+🔍 6. Botão de voltar
+<button type='button' onClick={() => changeStep(currentStep - 1)}
+        disabled={currentStep === 0}>
+
+
+Só volta se não estiver na etapa 0.
+
+Usa type="button" para NÃO fazer submit.
+
+🔍 7. Botão avançar
+
+Renderiza apenas se não estiver na última etapa:
+
+{!isLastStep && (
+  <button type="submit">
+    <span>Avançar</span>
+    <GrFormNext />
+  </button>
+)}
+
+✔ O que significa {!isLastStep && (...)} ?
+
+Isso é renderização condicional no React.
+
+Se isLastStep for false (ou seja, não é o último passo), o React renderiza esse botão.
+
+Se isLastStep for true, então ele não mostra nada.
+
+O botão envia o form → chama onSubmit → avança a etapa.
+
+🔍 8. Botão enviar
+
+Aparece somente na última etapa:
+
+{isLastStep && (
+  <div className="submit-area">
+    <button type="button">
+      <span>Enviar</span>
+      <FiSend />
+    </button>
+  </div>
+)}
+
+✔ Quando isso aparece?
+
+Somente quando isLastStep é true — ou seja, quando o usuário chegou à última etapa.
+
+✔ O que esse bloco faz?
+
+Exibe outro tipo de botão, agora com texto Enviar e ícone FiSend.
+
+Observe que esse botão tem:
+
+type="button"
+
+
+E não submit.
+
+Isso significa que esse botão não envia o formulário automaticamente —
+você provavelmente vai chamar uma função manualmente, como:
+
+Esse botão ainda não envia nada de verdade.
+Você poderia implementar lógica aqui (ex.: enviar dados via API).
+
+🎯 Resumo visual do funcionamento
+
+Você tem um array com 3 componentes
+
+O hook guarda o índice atual (currentStep)
+
+currentComponent exibe o componente correspondente
+
+Botões chamam changeStep() para avançar ou voltar
+
+isLastStep controla se deve mostrar o botão "Enviar"
